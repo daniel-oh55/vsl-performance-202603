@@ -561,13 +561,34 @@ td:first-child {
     <script>
 // --- 인증 시스템 변수 및 함수 ---
 // [1] 글로벌 변수 선언 (함수 밖으로 빼서 모든 함수가 공유하게 합니다)
-const ADMIN_KEYS = ['admin@sinokor.co.kr', 'daniel'];
-let whitelist = JSON.parse(localStorage.getItem('sk_auth_list')) || ['daniel@sinokor.co.kr'];
+const ADMIN_KEYS = ['admin@sinokor.co.kr', 'daniel']; 
+
+// 코드에 고정된 방문자 화이트리스트 (여기에 추가하면 즉시 반영됩니다)
+const DEFAULT_VISITORS = [
+    '456456', 'daniel@sinokor.co.kr', 
+'skhwang@sinokor.co.kr', 'andalucia@sinokor.co.kr', 'wtlee@sinokor.co.kr', 'sjunkim@heungaline.com', 'cys33@sinokor.co.kr', 'geonwook.kim@sinokor.co.kr ', 'bslee@sinokor.co.kr', 'mjchang@sinokor.co.kr', 'ijryu@sinokor.co.kr', 'kimmc@sinokor.co.kr', 'shjung@sinokor.co.kr', 'smmoon@heungaline.com', 'friend@sinokor.co.kr', 'binlee@heungaline.com', 'ghl@sinokor.co.kr', 'jaehkim@sinokor.co.kr', 'hwkang2@sinokor.co.kr'
+];
+
+// [2] 화이트리스트 병합 로직
+// 브라우저 저장소에서 가져온 데이터가 있으면 합치고, 없으면 빈 배열과 합칩니다.
+let savedList = JSON.parse(localStorage.getItem('sk_auth_list')) || [];
+
+// Set 자료구조를 사용하여 중복을 제거하고 하나의 리스트로 통합합니다.
+// Spread 연산자(...)를 사용하여 두 배열을 합칩니다.
+let whitelist = [...new Set([...DEFAULT_VISITORS, ...savedList])];
+
+
 
 function handleAuth() {
-    const input = document.getElementById('auth-email').value.trim().toLowerCase();
+    const inputField = document.getElementById('auth-email');
+    const input = inputField.value.trim().toLowerCase();
     
-    // [수정] 글로벌 변수인 whitelist를 바로 사용합니다.
+    if (!input) {
+        alert('이메일을 입력해주세요.');
+        return;
+    }
+
+    // 관리자이거나 화이트리스트(기본+추가)에 포함되어 있는지 확인
     if (ADMIN_KEYS.includes(input) || whitelist.includes(input)) {
         document.getElementById('sec-login').classList.add('hidden');
         
@@ -589,23 +610,31 @@ function showUserMgmt() {
 
 function renderList() {
     const ui = document.getElementById('whitelist-ui');
-    if (!ui) return; // UI 요소가 없으면 중단
+    if (!ui) return;
     
     ui.innerHTML = '';
+    
+    // 화면에는 '코드에 고정된 유저'와 '직접 추가한 유저'를 구분해서 보여주면 더 좋습니다.
     whitelist.forEach((m, i) => {
-        // [수정] ADMIN_EMAIL 대신 ADMIN_KEYS 목록에 있는지 확인합니다.
         if(ADMIN_KEYS.includes(m)) return; 
         
-        // 백틱(`)을 사용해 HTML을 생성합니다.
+        // 코드에 고정된 유저는 삭제 버튼을 숨기거나 비활성화 처리하는 것이 안전합니다.
+        const isDefault = DEFAULT_VISITORS.includes(m);
+        
         ui.innerHTML += `
             <div class="user-item" style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <span>${m}</span>
-                <span style="color:red; cursor:pointer; font-weight:bold;" onclick="delUser(${i})">삭제</span>
+                <span style="${isDefault ? 'color: #3498db; font-weight: bold;' : ''}">${m} ${isDefault ? '(SYSTEM)' : ''}</span>
+                ${isDefault ? 
+                    '<span style="color:gray; font-size:10px;">삭제불가</span>' : 
+                    `<span style="color:red; cursor:pointer; font-weight:bold;" onclick="delUser(${i})">삭제</span>`
+                }
             </div>`;
     });
-    // 변경된 목록을 저장합니다.
+    
+    // 저장할 때는 순수하게 사용자가 추가한 것만 걸러서 저장하거나 통합본을 저장합니다.
     localStorage.setItem('sk_auth_list', JSON.stringify(whitelist));
 }
+
 
 function addUser() {
     const inputField = document.getElementById('new-user-email');
