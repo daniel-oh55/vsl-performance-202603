@@ -370,16 +370,120 @@ td:first-child {
 .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #888; margin-top: 20px; font-size: 12px; }
 .user-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px; }
 
+#sec-login.auth-card {
+    background: rgba(255, 255, 255, 0.03); /* 더 투명하게 */
+    backdrop-filter: blur(25px) saturate(180%); /* 배경 흐림 강화 */
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* 얇은 유리 테두리 */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 
+                inset 0 0 15px rgba(255, 255, 255, 0.05); /* 내부 광택 */
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 420px;
+}
 
+/* 아이콘 섹션 */
+.auth-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.6));
+}
+
+/* 텍스트 스타일 */
+#sec-login h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+.auth-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 3px;
+    margin-bottom: 35px;
+    font-weight: 600;
+}
+
+/* 입력창 개선 */
+.auth-input-group { margin-bottom: 15px; }
+
+.auth-input {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 15px 20px !important;
+    font-size: 14px !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease;
+}
+
+.auth-input:focus {
+    border-color: #3498db !important;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 이미지 컨셉을 반영한 로그인 버튼 */
+.btn-login-gradient {
+    background: linear-gradient(90deg, #3498db 0%, #f39c12 100%) !important;
+    color: white !important;
+    border: none !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    letter-spacing: 2px !important;
+    padding: 16px !important;
+    margin-top: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-login-gradient:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
+}
+
+/* 추가 링크 (이미지의 Forgot password 느낌) */
+.auth-footer-links {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-footer-links span { cursor: pointer; transition: 0.3s; }
+.auth-footer-links span:hover { color: #fff; }
 
     </style>
 </head>
 <body>
 <div id="sec-login" class="auth-card">
-    <h2 style="color:white;">⚓ SYSTEM LOGIN</h2>
-    <input type="email" id="auth-email" class="auth-input" placeholder="이메일을 입력하세요">
-    <button class="auth-btn btn-blue" onclick="handleAuth()">접속하기</button>
+    <div class="auth-icon">🛡️</div> <p style="font-size: 11px; color: rgba(255,255,255,0.4); margin: 0;">SKR & HAL</p>
+    <h2>SYSTEM ACCESS</h2>
+    <p class="auth-subtitle">SHIP PERFORMANCE ANALYZER</p>
+    
+    <div class="auth-input-group">
+        <input type="email" id="auth-email" class="auth-input" 
+               placeholder="이메일 주소를 입력하세요" 
+               onkeyup="if(window.event.keyCode==13){handleAuth()}">
+        
+        <input type="password" class="auth-input" style="margin-top:10px"
+               placeholder="••••••••">
+    </div>
+    
+    <button class="auth-btn btn-login-gradient" onclick="handleAuth()">
+        LOGIN
+    </button>
+
+    <div class="auth-footer-links">
+        <span>Forgot password?</span>
+        <span>Create Account</span>
+    </div>
 </div>
+
 
 <div id="sec-admin-menu" class="auth-card hidden">
     <h2 style="color:white;">⚙️ ADMIN MENU</h2>
